@@ -3,6 +3,7 @@ import { createSortTemplate } from './view/sort.js';
 import { createProfileTemplate } from './view/profile.js';
 import { createFilmCardTemplate } from './view/film-cards.js';
 import { createShowMoreButtonTemplate } from './view/show-more-button.js';
+import { createFilmDetailsTemplate } from './view/film-details.js';
 
 const CARDS_COUNT = 5;
 
