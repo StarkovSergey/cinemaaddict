@@ -1,3 +1,4 @@
+
 const path = require('path');
 
 module.exports = {
@@ -8,7 +9,15 @@ module.exports = {
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: path.resolve(__dirname, './public'),
-    watchContentBase: true, // следить за изменением контента
+    hot: false
+  },
+  module: {
+    rules: [
+        {
+          test: /\.js$/,
+          exclude: /(node_modules)/,
+          use: ['babel-loader']
+        }
+    ]
   }
 };
