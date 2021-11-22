@@ -5,6 +5,7 @@ import { createFilmCardTemplate } from './view/film-cards.js';
 import { createShowMoreButtonTemplate } from './view/show-more-button.js';
 import { createFilmDetailsTemplate } from './view/film-details.js';
 
+
 const CARDS_COUNT = 5;
 
 const render = (container, template, place = 'beforeend') => {
