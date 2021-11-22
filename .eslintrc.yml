@@ -9,3 +9,6 @@ env:
 
 extends: 'htmlacademy/vanilla'
 parser: '@babel/eslint-parser'
+
+rules:
+  # arrow-body-style: off

@@ -17,22 +17,32 @@ const generateDescription = () => {
   return description;
 };
 
+const generateCommentsId = () => {
+  const comments = [];
+  for (let i = 1; i <= 5; i++) {
+    if (getRandomInteger()) {
+      comments.push(i);
+    }
+  }
+  return comments;
+}
+
 export const generateFilm = () => {
   return {
     id: '',
-    comments: [1, 2, 4],
+    comments: generateCommentsId(),
     title: 'Lord of the rings',
-    alternativeTitle: '',
-    poster: './images/posters/the-great-flamarion.jpg',
+    alternativeTitle: 'Lord of the rings',
+    poster: './images/posters/the-dance-of-life.jpg',
     description: generateDescription(),
-    rating: 8,
-    ageRating: 0,
+    rating: (getRandomInteger(1, 10) - getRandomInteger(0, 9) / 10).toFixed(1),
+    ageRating: getRandomInteger(1, 18),
     director: 'Peter Jackson',
     writers: ['Fran Walsh', 'Philippa Boyens'],
-    releaseDate: 2001,
+    releaseDate: '2019-05-01',
     genres: ['Drama', 'Mystery'],
     actors: ['Elijah Wood', 'Ian McKellen', 'Liv Tyler', 'Viggo Mortensen'],
     country: 'New Zealand',
-    runtime: 185,
+    runtime: 120 + getRandomInteger(-60, 90),
   };
 };
