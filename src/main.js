@@ -9,12 +9,14 @@ import { generateFilm } from './mock/film.js';
 import { generateFilter } from './mock/filter.js';
 import { generateComments } from './mock/comments.js';
 
-const CARDS_COUNT = 15;
+const CARDS_COUNT = 14;
 const CARDS_COUNT_PER_STEP = 5;
+const COMMENTS_QUANTITY = 5;
+
 
 const films = new Array(CARDS_COUNT).fill().map(generateFilm);
 const filters = generateFilter(films);
-const comments = generateComments();
+const comments = generateComments(COMMENTS_QUANTITY);
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
@@ -30,11 +32,31 @@ render(siteHeaderElement, createProfileTemplate());
 render(siteMainElement, createSortTemplate(), 'afterbegin');
 render(siteMainElement, createSiteMenuTemplate(filters), 'afterbegin');
 
-for (let i = 0; i < CARDS_COUNT; i++) {
+for (let i = 0; i < Math.min(CARDS_COUNT, CARDS_COUNT_PER_STEP); i++) {
   render(siteFilmListContainer, createFilmCardTemplate(films[i]));
 }
 
-render(siteFilmList, createShowMoreButtonTemplate());
+if (films.length > CARDS_COUNT_PER_STEP) {
+  let renderedCardCount = CARDS_COUNT_PER_STEP;
+  render(siteFilmList, createShowMoreButtonTemplate());
+
+  const showMoreButton = document.querySelector('.films-list__show-more');
+
+  showMoreButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+
+    films
+      .slice(renderedCardCount, renderedCardCount + CARDS_COUNT_PER_STEP)
+      .forEach((card) => render(siteFilmListContainer, createFilmCardTemplate(card), 'beforeend'));
+
+      renderedCardCount += CARDS_COUNT_PER_STEP;
+
+      if (renderedCardCount >= films.length) {
+        showMoreButton.remove();
+      }
+  });
+}
+
 render(siteFooterStatistics, createFooterStats(), 'afterbegin');
 
-// render(siteMainElement, createFilmDetailsTemplate(films[0], comments));
+render(siteMainElement, createFilmDetailsTemplate(films[0], comments));

@@ -1,8 +1,6 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils'
 
-const COMMENTS_QUANTITY = 5;
-
 const generateCommentText = () => {
   const textComments = [
     'Interesting setting and a good cast',
@@ -29,9 +27,9 @@ const generateDate = () => {
   return dayjs().subtract(getRandomInteger(0, 2), 'year').subtract(getRandomInteger(0, 1), 'month').subtract(getRandomInteger(0, 3), 'day').subtract(getRandomInteger(0, 24), 'hour').subtract(getRandomInteger(0, 60), 'minute');
 }
 
-export const generateComments = () => {
+export const generateComments = (quantity) => {
   let id = 0;
-  const comments = new Array(COMMENTS_QUANTITY).fill().map(() => {
+  const comments = new Array(quantity).fill().map(() => {
     id++;
     return {
       id,
