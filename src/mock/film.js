@@ -27,6 +27,10 @@ const generateCommentsId = () => {
   return comments;
 }
 
+const generateDate = () => {
+  return `${2000 + getRandomInteger(-65, 22)}-${getRandomInteger(1, 12)}-${getRandomInteger(1, 30)}`;
+};
+
 export const generateFilm = () => {
   return {
     id: '',
@@ -39,10 +43,15 @@ export const generateFilm = () => {
     ageRating: getRandomInteger(1, 18),
     director: 'Peter Jackson',
     writers: ['Fran Walsh', 'Philippa Boyens'],
-    releaseDate: '2019-05-01',
+    releaseDate: generateDate(),
     genres: ['Drama', 'Mystery'],
     actors: ['Elijah Wood', 'Ian McKellen', 'Liv Tyler', 'Viggo Mortensen'],
     country: 'New Zealand',
     runtime: 120 + getRandomInteger(-60, 90),
+    userDetails: {
+      watchlist: Boolean(getRandomInteger(0, 1)),
+      history: Boolean(getRandomInteger(0, 1)),
+      favorites: Boolean(getRandomInteger(0, 1)),
+    }
   };
 };

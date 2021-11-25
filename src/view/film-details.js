@@ -1,8 +1,32 @@
 import { makeFullDate } from '../utils';
 import { humanizeRuntime } from '../utils';
+import { makeTimeDate } from '../utils';
 
-export const createFilmDetailsTemplate = (film) => {
-  const {poster, title, alternativeTitle, rating, director, writers, actors, releaseDate, runtime, country, genres, description, ageRating} = film;
+const createCommentItemTemplate = (comment) => {
+  const {text, author, emotion, date} = comment;
+  return `
+    <li class="film-details__comment">
+    <span class="film-details__comment-emoji">
+      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
+    </span>
+    <div>
+      <p class="film-details__comment-text">${text}</p>
+      <p class="film-details__comment-info">
+        <span class="film-details__comment-author">${author}</span>
+        <span class="film-details__comment-day">${makeTimeDate(date)}</span>
+        <button class="film-details__comment-delete">Delete</button>
+      </p>
+    </div>
+  </li>
+  `
+}
+
+export const createFilmDetailsTemplate = (film, comments) => {
+  const {poster, title, alternativeTitle, rating, director, writers, actors, releaseDate, runtime, country, genres, description, ageRating, comments: commentsIdList} = film;
+
+  const commentItemsTemplate = commentsIdList.map(id => {
+    return createCommentItemTemplate(comments.find((comment) => comment.id === id))
+  }).join('');
 
   return `
     <section class="film-details">
@@ -84,9 +108,11 @@ export const createFilmDetailsTemplate = (film) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">0</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsIdList.length}</span></h3>
 
-          <ul class="film-details__comments-list"></ul>
+          <ul class="film-details__comments-list">
+            ${commentItemsTemplate}
+          </ul>
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label"></div>

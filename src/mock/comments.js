@@ -1,18 +1,46 @@
-export const generateComments = () => {
-  [
-    {
-      id: 1,
-      text: 'Отличный фильм',
-      emotion: '',
-      author: '',
-      date: '',
-    },
-    {
-      id: 2,
-      text: 'Отличный фильм',
-      emotion: '',
-      author: '',
-      date: '',
-    },
+import dayjs from 'dayjs';
+import { getRandomInteger } from '../utils'
+
+const COMMENTS_QUANTITY = 5;
+
+const generateCommentText = () => {
+  const textComments = [
+    'Interesting setting and a good cast',
+    'Booooooooooring',
+    'Very very old. Meh',
+    'Almost two hours? Seriously?',
   ]
+
+  return textComments[getRandomInteger(0, textComments.length - 1)];
+}
+
+const generateEmotion = () => {
+  const emotions = [
+    'angry',
+    'puke',
+    'sleeping',
+    'smile',
+  ]
+
+  return emotions[getRandomInteger(0, emotions.length - 1)];
+}
+
+const generateDate = () => {
+  return dayjs().subtract(getRandomInteger(0, 2), 'year').subtract(getRandomInteger(0, 1), 'month').subtract(getRandomInteger(0, 3), 'day').subtract(getRandomInteger(0, 24), 'hour').subtract(getRandomInteger(0, 60), 'minute');
+}
+
+export const generateComments = () => {
+  let id = 0;
+  const comments = new Array(COMMENTS_QUANTITY).fill().map(() => {
+    id++;
+    return {
+      id,
+      text: generateCommentText(),
+      emotion: generateEmotion(),
+      author: 'John Doe',
+      date: generateDate(),
+    }
+  })
+
+  return comments;
 }

@@ -19,3 +19,7 @@ export const makeFullDate = (date) => {
 export const makeYearDate = (date) => {
   return dayjs(date).format('YYYY');
 };
+
+export const makeTimeDate = (date) => {
+  return dayjs(date).format('YYYY/M/D HH:MM');
+}
