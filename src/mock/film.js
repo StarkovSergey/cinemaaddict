@@ -7,10 +7,10 @@ const generateDescription = () => {
   let description = '';
   for (let i = 0; i < 5; i++) {
     if (i === 0) {
-      description += strings[getRandomInteger(0, strings.length)];
+      description += strings[getRandomInteger(0, strings.length - 1)];
     }
     if (getRandomInteger()) {
-      description += strings[getRandomInteger(0, strings.length)];
+      description += strings[getRandomInteger(0, strings.length - 1)];
     }
   }
 
@@ -31,13 +31,27 @@ const generateDate = () => {
   return `${2000 + getRandomInteger(-65, 22)}-${getRandomInteger(1, 12)}-${getRandomInteger(1, 30)}`;
 };
 
+const generatePoster = () => {
+  const posters = [
+    './images/posters/made-for-each-other.png',
+    './images/posters/popeye-meets-sinbad.png',
+    './images/posters/sagebrush-trail.jpg',
+    './images/posters/santa-claus-conquers-the-martians.jpg',
+    './images/posters/the-dance-of-life.jpg',
+    './images/posters/the-great-flamarion.jpg',
+    './images/posters/the-man-with-the-golden-arm.jpg',
+  ]
+
+  return posters[getRandomInteger(0, posters.length - 1)];
+}
+
 export const generateFilm = () => {
   return {
     id: '',
     comments: generateCommentsId(),
     title: 'Lord of the rings',
     alternativeTitle: 'Lord of the rings',
-    poster: './images/posters/the-dance-of-life.jpg',
+    poster: generatePoster(),
     description: generateDescription(),
     rating: (getRandomInteger(1, 10) - getRandomInteger(0, 9) / 10).toFixed(1),
     ageRating: getRandomInteger(1, 18),

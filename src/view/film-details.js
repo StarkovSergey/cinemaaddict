@@ -1,3 +1,4 @@
+import { createElement } from '../utils';
 import { makeFullDate } from '../utils';
 import { humanizeRuntime } from '../utils';
 import { makeTimeDate } from '../utils';
@@ -21,15 +22,14 @@ const createCommentItemTemplate = (comment) => {
   `
 }
 
-export const createFilmDetailsTemplate = (film, comments) => {
+const createFilmDetailsTemplate = (film, comments) => {
   const {poster, title, alternativeTitle, rating, director, writers, actors, releaseDate, runtime, country, genres, description, ageRating, comments: commentsIdList} = film;
 
   const commentItemsTemplate = commentsIdList.map(id => {
     return createCommentItemTemplate(comments.find((comment) => comment.id === id))
   }).join('');
 
-  return `
-    <section class="film-details">
+  return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__top-container">
         <div class="film-details__close">
@@ -149,3 +149,27 @@ export const createFilmDetailsTemplate = (film, comments) => {
     </section>
   `;
 };
+
+export default class FilmDetails {
+  constructor(film, comments) {
+    this._element = null;
+    this._film = film;
+    this._comments = comments;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
