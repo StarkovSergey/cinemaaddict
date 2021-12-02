@@ -1,4 +1,5 @@
-import { createElement } from '../utils';
+import AbstractView from './abstract';
+
 import { makeFullDate } from '../utils';
 import { humanizeRuntime } from '../utils';
 import { makeTimeDate } from '../utils';
@@ -150,26 +151,14 @@ const createFilmDetailsTemplate = (film, comments) => {
   `;
 };
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractView {
   constructor(film, comments) {
-    this._element = null;
+    super();
     this._film = film;
     this._comments = comments;
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._film, this._comments);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
