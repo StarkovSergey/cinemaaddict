@@ -1,7 +1,6 @@
 import AbstractView from './abstract';
 
-import { humanizeRuntime } from '../utils';
-import { makeYearDate } from '../utils';
+import { humanizeRuntime, makeYearDate } from '../util/cards';
 
 const createFilmCardTemplate = (film) => {
   const {description, title, rating, releaseDate, comments, runtime, genres, poster} = film;
@@ -30,9 +29,23 @@ export default class FilmCard extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
+    this._openPopupClickHandler = this._openPopupClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
+  }
+
+  _openPopupClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.openPopupClick();
+  }
+
+  setOpenPopupClickHandler = (callback) => {
+    this._callback.openPopupClick = callback;
+    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._openPopupClickHandler);
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._openPopupClickHandler);
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._openPopupClickHandler);
   }
 }

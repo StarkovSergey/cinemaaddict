@@ -10,7 +10,7 @@ import ListEmptyView from './view/list-empty.js';
 import { generateFilm } from './mock/film.js';
 import { generateFilter } from './mock/filter.js';
 import { generateComments } from './mock/comments.js';
-import { render, RenderPosition } from './utils.js';
+import { render, RenderPosition, remove } from './util/render';
 
 const CARDS_COUNT = 14;
 const CARDS_COUNT_PER_STEP = 5;
@@ -28,10 +28,10 @@ const siteFilmListContainer = document.querySelector('.films-list__container');
 const siteFooterStatistics = document.querySelector('.footer__statistics');
 
 // рендер элементов
-render(siteHeaderElement, new ProfileView().getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new SortView().getElement(), RenderPosition.AFTERBEGIN);
-render(siteMainElement, new SiteMenuView(filters).getElement(), RenderPosition.AFTERBEGIN);
-render(siteFooterStatistics, new FooterStatsView().getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new ProfileView(), RenderPosition.BEFOREEND);
+render(siteMainElement, new SortView(), RenderPosition.AFTERBEGIN);
+render(siteMainElement, new SiteMenuView(filters), RenderPosition.AFTERBEGIN);
+render(siteFooterStatistics, new FooterStatsView(), RenderPosition.BEFOREEND);
 
 // cb-function для показа popup
 const showFilmDetails = (card, comments) => {
@@ -40,7 +40,7 @@ const showFilmDetails = (card, comments) => {
   }
 
   const filmDetailsComponent = new FilmDetailsView(card, comments);
-  render(siteMainElement, filmDetailsComponent.getElement(), RenderPosition.BEFOREEND);
+  render(siteMainElement, filmDetailsComponent, RenderPosition.BEFOREEND);
   document.body.classList.add('hide-overflow');
 
   const onEscKeyDown = (evt) => {
@@ -52,23 +52,19 @@ const showFilmDetails = (card, comments) => {
   }
 
   const hideFilmDetails = () => {
-    filmDetailsComponent.getElement().remove();
-    filmDetailsComponent.removeElement();
+    remove(filmDetailsComponent);
     document.body.classList.remove('hide-overflow');
   }
 
-  filmDetailsComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', () => hideFilmDetails());
-
+  filmDetailsComponent.setCloseClickHandler(hideFilmDetails);
   document.addEventListener('keydown', onEscKeyDown);
 }
 
 const renderFilmCard = (container, card) => {
   const filmCardComponent = new FilmCardView(card);
-  render(container, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(container, filmCardComponent, RenderPosition.BEFOREEND);
 
-  filmCardComponent.getElement().querySelector('.film-card__poster').addEventListener('click', () => showFilmDetails(card, comments));
-  filmCardComponent.getElement().querySelector('.film-card__title').addEventListener('click', () => showFilmDetails(card, comments));
-  filmCardComponent.getElement().querySelector('.film-card__comments').addEventListener('click', () => showFilmDetails(card, comments));
+  filmCardComponent.setOpenPopupClickHandler(() => showFilmDetails(card, comments))
 }
 
 const renderFilmList = () => {
@@ -80,11 +76,9 @@ const renderFilmList = () => {
     let renderedCardCount = CARDS_COUNT_PER_STEP;
     const showMoreButtonComponent = new ShowMoreButtonView();
 
-    render(siteFilmList, showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+    render(siteFilmList, showMoreButtonComponent, RenderPosition.BEFOREEND);
 
-    showMoreButtonComponent.getElement().addEventListener('click', (evt) => {
-      evt.preventDefault();
-
+    showMoreButtonComponent.setShowMoreCardsClickHandler(() => {
       cards
         .slice(renderedCardCount, renderedCardCount + CARDS_COUNT_PER_STEP)
         .forEach((card) => renderFilmCard(siteFilmListContainer, card));
@@ -92,16 +86,15 @@ const renderFilmList = () => {
         renderedCardCount += CARDS_COUNT_PER_STEP;
 
         if (renderedCardCount >= cards.length) {
-          showMoreButtonComponent.getElement().remove();
-          showMoreButtonComponent.removeElement();
+          remove(showMoreButtonComponent);
         }
-    });
+    })
   }
 
   // экран, когда список фильмов пуст
   if (cards.length === 0) {
     siteFilmList.querySelector('.films-list__title').remove();
-    render(siteFilmList, new ListEmptyView().getElement(), RenderPosition.BEFOREEND)
+    render(siteFilmList, new ListEmptyView(), RenderPosition.BEFOREEND)
   }
 }
 
