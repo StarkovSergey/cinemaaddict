@@ -21,11 +21,15 @@ const createCommentItemTemplate = (comment) => {
 }
 
 const createFilmDetailsTemplate = (film, comments) => {
-  const {poster, title, alternativeTitle, rating, director, writers, actors, releaseDate, runtime, country, genres, description, ageRating, comments: commentsIdList} = film;
+  const {poster, title, alternativeTitle, rating, director, writers, actors, releaseDate, runtime, country, genres, description, ageRating, comments: commentsIdList, userDetails: {watchlist, history, favorites}} = film;
 
   const commentItemsTemplate = commentsIdList.map(id => {
     return createCommentItemTemplate(comments.find((comment) => comment.id === id))
   }).join('');
+
+  const addChecked = (parameter) => {
+    return parameter ? 'checked' : '';
+  }
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -93,13 +97,13 @@ const createFilmDetailsTemplate = (film, comments) => {
         </div>
 
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${addChecked(watchlist)}>
           <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${addChecked(history)}>
           <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${addChecked(favorites)}>
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
         </section>
       </div>
