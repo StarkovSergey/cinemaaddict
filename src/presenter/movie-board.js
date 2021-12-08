@@ -14,8 +14,9 @@ export default class movieBoard {
     this._filmListContainer = filmListContainer;
 
     this._renderedCardCount = CARDS_COUNT_PER_STEP;
-    this._showMoreButtonComponent = new ShowMoreButtonView();
+    this._cardMap = new Map();
 
+    this._showMoreButtonComponent = new ShowMoreButtonView();
     this._sortComponent = new SortView();
     this._listEmptyComponent = new ListEmptyView();
 
@@ -42,6 +43,7 @@ export default class movieBoard {
   _renderFilmCard(container, card) {
     const filmCardPresenter = new CardPresenter(container, this._movieBoardContainer);
     filmCardPresenter.init(card, this._comments);
+    this._cardMap.set(card.id, filmCardPresenter);
   }
 
   _renderFilmCards(from, to) {
@@ -76,5 +78,13 @@ export default class movieBoard {
   _renderListEmpty() {
     this._filmListSection.querySelector('.films-list__title').remove();
     render(this._filmListSection, this._listEmptyComponent, RenderPosition.BEFOREEND)
+  }
+
+  _clearFilmList() {
+    console.log(this._cardMap)
+    this._cardMap.forEach((presenter) => presenter.destroy());
+    this._cardMap.clear(); // очищаем словарь
+    this._renderedCardCount = CARDS_COUNT_PER_STEP; // обнуляем количество показанных карточек
+    remove(this._showMoreButtonComponent); // удаляем кнопку
   }
 }

@@ -1,4 +1,5 @@
-import { getRandomInteger } from '../util/common'
+import { getRandomInteger } from '../util/common';
+import { nanoid } from 'nanoid';
 
 const generateDescription = () => {
   const string = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orciut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.';
@@ -47,7 +48,7 @@ const generatePoster = () => {
 
 export const generateFilm = () => {
   return {
-    id: '',
+    id: nanoid(),
     comments: generateCommentsId(),
     title: 'Lord of the rings',
     alternativeTitle: 'Lord of the rings',
