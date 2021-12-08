@@ -1,8 +1,8 @@
 import SortView from '../view/sort.js';
-import FilmCardView from '../view/film-card.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
-import FilmDetailsView from '../view/film-details.js';
 import ListEmptyView from '../view/list-empty.js';
+import CardPresenter from './card';
+
 import { render, RenderPosition, remove } from '../util/render';
 
 const CARDS_COUNT_PER_STEP = 5;
@@ -39,36 +39,9 @@ export default class movieBoard {
     render(this._movieBoardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderFilmsDetails(card, comments) {
-    if (document.querySelector('.film-details')) { // * это заплатка: я не обращаюсь к компоненту
-      document.querySelector('.film-details').remove();
-    }
-
-    const filmDetailsComponent = new FilmDetailsView(card, comments);
-    render(this._movieBoardContainer, filmDetailsComponent, RenderPosition.BEFOREEND);
-    document.body.classList.add('hide-overflow');
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        hideFilmDetails(filmDetailsComponent);
-      }
-      document.removeEventListener('keydown', onEscKeyDown);
-    }
-
-    const hideFilmDetails = () => {
-      remove(filmDetailsComponent);
-      document.body.classList.remove('hide-overflow');
-    }
-
-    filmDetailsComponent.setCloseClickHandler(hideFilmDetails);
-    document.addEventListener('keydown', onEscKeyDown);
-  }
-
   _renderFilmCard(container, card) {
-    const filmCardComponent = new FilmCardView(card);
-    render(container, filmCardComponent, RenderPosition.BEFOREEND);
-    filmCardComponent.setOpenPopupClickHandler(() => this._renderFilmsDetails(card, this._comments))
+    const filmCardPresenter = new CardPresenter(container, this._movieBoardContainer);
+    filmCardPresenter.init(card, this._comments);
   }
 
   _renderFilmCards(from, to) {
