@@ -23,6 +23,7 @@ export default class movieBoard {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleCardChange = this._changeData.bind(this);
     this._changeData = this._changeData.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(cards, comments) {
@@ -45,12 +46,16 @@ export default class movieBoard {
     this._cardMap.get(updatedCard.id).init(updatedCard, this._comments);
   }
 
+  _handleModeChange() {
+    this._cardMap.forEach((presenter) => presenter.resetView());
+  }
+
   _renderSort() {
     render(this._movieBoardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilmCard(container, card) {
-    const filmCardPresenter = new CardPresenter(container, this._movieBoardContainer, this._changeData);
+    const filmCardPresenter = new CardPresenter(container, this._movieBoardContainer, this._changeData, this._handleModeChange);
     filmCardPresenter.init(card, this._comments);
     this._cardMap.set(card.id, filmCardPresenter);
   }

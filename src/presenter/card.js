@@ -1,16 +1,22 @@
 import FilmCardView from '../view/film-card.js';
 import FilmDetailsView from '../view/film-details.js';
-
 import { render, RenderPosition, remove, replace } from '../util/render';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  OPENED: 'OPENED',
+};
+
 export default class Card {
-  constructor(filmListContainer, movieBoardContainer, changeData) {
+  constructor(filmListContainer, movieBoardContainer, changeData, changeMode) {
     this._filmListContainer = filmListContainer;
     this._movieBoardContainer = movieBoardContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._cardComponent = null;
     this._filmDetailsComponent = null;
+    this._mode = Mode.DEFAULT;
 
     // биндим функции-обработчики
     this._handleShowFilmDetails = this._handleShowFilmDetails.bind(this);
@@ -55,7 +61,7 @@ export default class Card {
     }
 
     // если в main есть попан, замени его
-    if (this._movieBoardContainer.contains(prevFilmDetailsComponent.getElement())) {
+    if (this._mode === Mode.OPENED) {
       replace(this._filmDetailsComponent, prevFilmDetailsComponent);
     }
 
@@ -65,18 +71,19 @@ export default class Card {
 
   _handleShowFilmDetails() {
     // TODO это заплатка: я не обращаюсь к компоненту
-    if (document.querySelector('.film-details')) {
-      document.querySelector('.film-details').remove();
-    }
+    // if (document.querySelector('.film-details')) {
+    //   document.querySelector('.film-details').remove();
+    // }
 
     render(this._movieBoardContainer, this._filmDetailsComponent, RenderPosition.BEFOREEND);
-    document.body.classList.add('hide-overflow');
 
     this._filmDetailsComponent.setCloseClickHandler(this._hideFilmDetails);
     this._filmDetailsComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmDetailsComponent.setHistoryClickHandler(this._handleHistoryClick);
     this._filmDetailsComponent.setFavoritesClickHandler(this._handleFavoritesClick);
-
+    this._changeMode();
+    this._mode = Mode.OPENED;
+    document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
@@ -91,11 +98,18 @@ export default class Card {
   _hideFilmDetails() {
     remove(this._filmDetailsComponent);
     document.body.classList.remove('hide-overflow');
+    this._mode = Mode.DEFAULT;
   }
 
   destroy() {
     remove(this._cardComponent);
     remove(this._filmDetailsComponent);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._hideFilmDetails();
+    }
   }
 
   _handleWatchlistClick() {
