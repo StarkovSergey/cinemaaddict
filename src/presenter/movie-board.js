@@ -2,7 +2,7 @@ import SortView from '../view/sort.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import ListEmptyView from '../view/list-empty.js';
 import CardPresenter from './card';
-
+import { updateItem } from '../util/common.js';
 import { render, RenderPosition, remove } from '../util/render';
 
 const CARDS_COUNT_PER_STEP = 5;
@@ -21,6 +21,8 @@ export default class movieBoard {
     this._listEmptyComponent = new ListEmptyView();
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleCardChange = this._changeData.bind(this);
+    this._changeData = this._changeData.bind(this);
   }
 
   init(cards, comments) {
@@ -36,12 +38,19 @@ export default class movieBoard {
     this._renderFilmList();
   }
 
+  // принимает объект обновленной карточки и с помощью утилитарной функции обновляет данные в моках. Затем вызывается init и всё перерисовывается
+  // передаётся в создаваемый CardPresenter (метод _renderFilmCard)
+  _changeData(updatedCard) {
+    this._cards = updateItem(this._cards, updatedCard);
+    this._cardMap.get(updatedCard.id).init(updatedCard, this._comments);
+  }
+
   _renderSort() {
     render(this._movieBoardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilmCard(container, card) {
-    const filmCardPresenter = new CardPresenter(container, this._movieBoardContainer);
+    const filmCardPresenter = new CardPresenter(container, this._movieBoardContainer, this._changeData);
     filmCardPresenter.init(card, this._comments);
     this._cardMap.set(card.id, filmCardPresenter);
   }
