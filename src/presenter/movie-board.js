@@ -4,6 +4,8 @@ import ListEmptyView from '../view/list-empty.js';
 import CardPresenter from './card';
 import { updateItem } from '../util/common.js';
 import { render, RenderPosition, remove } from '../util/render';
+import { sortCardDate } from '../util/cards.js';
+import { SortType } from '../const.js';
 
 const CARDS_COUNT_PER_STEP = 5;
 
@@ -15,6 +17,7 @@ export default class movieBoard {
 
     this._renderedCardCount = CARDS_COUNT_PER_STEP;
     this._cardMap = new Map();
+    this._currentSortType = SortType.DEFAULT;
 
     this._showMoreButtonComponent = new ShowMoreButtonView();
     this._sortComponent = new SortView();
@@ -24,10 +27,12 @@ export default class movieBoard {
     this._handleCardChange = this._changeData.bind(this);
     this._changeData = this._changeData.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(cards, comments) {
     this._cards = cards.slice();
+    this._sourcedCards = this._cards.slice();
     this._comments = comments.slice();
 
     if (this._cards.length === 0) {
@@ -43,6 +48,7 @@ export default class movieBoard {
   // передаётся в создаваемый CardPresenter (метод _renderFilmCard)
   _changeData(updatedCard) {
     this._cards = updateItem(this._cards, updatedCard);
+    this._sourcedCards = updateItem(this._sourcedCards, updatedCard);
     this._cardMap.get(updatedCard.id).init(updatedCard, this._comments);
   }
 
@@ -50,8 +56,34 @@ export default class movieBoard {
     this._cardMap.forEach((presenter) => presenter.resetView());
   }
 
+  _sortCards(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._cards.sort(sortCardDate);
+        break;
+      case SortType.RATING:
+        this._cards.sort((cardA, cardB) => cardB.rating - cardA.rating);
+        break;
+      default:
+        this._cards = this._sourcedCards.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortCards(sortType); // сортирует массив фильмов
+    this._clearFilmList(); // чистит отрисованный список
+    this._renderFilmList(); // рендерит отсортированный список
+  }
+
   _renderSort() {
     render(this._movieBoardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderFilmCard(container, card) {
@@ -95,7 +127,6 @@ export default class movieBoard {
   }
 
   _clearFilmList() {
-    console.log(this._cardMap)
     this._cardMap.forEach((presenter) => presenter.destroy());
     this._cardMap.clear(); // очищаем словарь
     this._renderedCardCount = CARDS_COUNT_PER_STEP; // обнуляем количество показанных карточек

@@ -17,3 +17,7 @@ export const makeYearDate = (date) => {
 export const makeTimeDate = (date) => {
   return dayjs(date).format('YYYY/M/D HH:MM');
 };
+
+export const sortCardDate = (cardA, cardB) => {
+  return dayjs(cardB.releaseDate).diff(dayjs(cardA.releaseDate));
+};
